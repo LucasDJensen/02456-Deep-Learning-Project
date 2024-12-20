@@ -1,0 +1,316 @@
+### ---- Experiment Configuration ---- ###
+
+# Experiment Name
+experiment_name: "nse_us_lstm_attributes_365"
+
+# place to store run directory (if empty runs are stored in code_dir/runs/)
+run_dir:
+
+# files to specify training, validation and test basins (relative to code root or absolute path)
+train_basin_file: C:\Users\lucas\PycharmProjects\_specialkursus\data_config\us_camels\531_basin_list.txt
+validation_basin_file: C:\Users\lucas\PycharmProjects\_specialkursus\data_config\us_camels\531_basin_list.txt
+test_basin_file: C:\Users\lucas\PycharmProjects\_specialkursus\data_config\us_camels\531_basin_list.txt
+
+# training, validation and test time periods (format = 'dd/mm/yyyy')
+# Start date of the training period (first day of discharge) in the format DD/MM/YYYY. Can also be a list of dates to specify multiple training periods. If a list is specified, train_end_date must also be a list of equal length
+train_start_date: '01/10/1999'
+# End date of the training period (last day of discharge) in the format DD/MM/YYYY. Can also be a list of dates. If a list is specified, also train_start_date must be a list with an equal length.
+train_end_date: '30/09/2008'
+# Start date of the validation period (first day of discharge) in the format DD/MM/YYYY. Can also be a list of dates (similar to train period specifications).
+validation_start_date: '01/10/1980'
+# End date of the validation period (last day of discharge) in the format DD/MM/YYYY. Can also be a list of dates (similar to train period specifications).
+validation_end_date: '30/09/1989'
+# Start date of the test period (first day of discharge) in the format DD/MM/YYYY. Can also be a list of dates (similar to train period specifications).
+test_start_date: '01/10/1989'
+# End date of the validation period (last day of discharge) in the format DD/MM/YYYY. Can also be a list of dates (similar to train period specifications).
+test_end_date: '30/09/1999'
+
+# if you want to use different (continuous or split) periods per basin (and period) define path to pickle files here.
+per_basin_train_periods_file:
+per_basin_validation_periods_file:
+per_basin_test_periods_file:
+
+# fixed seed, leave empty to use a random seed
+# seed: 42
+
+# which GPU (id) to use [in format of cuda:0, cuda:1 etc, or cpu or None]
+device: cuda:0
+
+# --- Validation configuration ---------------------------------------------------------------------
+
+# specify after how many epochs to perform validation
+validate_every: 3
+
+# specify how many random basins to use for validation
+validate_n_random_basins: 1
+
+# specify which metrics to calculate during validation (see neuralhydrology.evaluation.metrics)
+# this can either be a list or a dictionary. If a dictionary is used, the inner keys must match the name of the
+# target_variable specified below. Using dicts allows for different metrics per target variable.
+metrics:
+  - KGE
+  - Beta-KGE
+  - NSE
+  - Alpha-NSE
+  - Beta-NSE
+  - RMSE
+  - MSE
+
+# True/False, if True, stores the validation results to disk as a pickle file. Otherwise they are only used for TensorBoard. This is different than save_all_validation_output in that only the predictive outputs are saved, and not all of the model output features.
+save_validation_results: False
+
+# True/False, if True, stores all model outputs from the validation runs to disk as a pickle file. Defaults to False. This differs from save_validation_results, in that here all model output is saved. This can result in files that are quite large. Predictions in this file will not be scaled. This is the raw output from the model.
+#save_all_validation_output: False
+
+# --- Model configuration --------------------------------------------------------------------------
+
+# base model type [cudalstm, ealstm, customlstm, embcudalstm, gru, transformer, mamba, mclstm, arlstm, handoff_forecast_lstm, sequential_forecast_lstm, multihead_forecast_lstm, stacked_forecast_lstm]
+# (has to match the if statement in modelzoo/__init__.py)
+model: cudalstm
+
+# prediction head [regression]. Define the head specific parameters below
+head: regression
+
+# path to weight file that should be used as initial weights. Leave empty to start from random weights
+checkpoint_path:
+
+# ----> General settings <----
+
+# Hidden size of the model class. In the case of an LSTM, this reflects the number of LSTM states.
+hidden_size: 64
+
+# Initial value of the forget gate bias.
+initial_forget_bias: 3
+
+# Dropout applied to the output of the LSTM
+output_dropout: 0.4
+
+
+# ----> Regression settings <----
+# Which activation to use on the output neuron(s) of the linear layer. Currently supported are linear, relu, softplus. If empty, linear is used.
+output_activation: linear
+
+# True/False. Wheter Monte-Carlo dropout is used to sample during inference.
+mc_dropout:
+
+# --- Embedding network settings --------------------------------------------------------------------
+
+# None (default) or a dict that defines the embedding network for static inputs
+# Note that for EA-LSTM, there will always be an additional linear layer that maps to the EA-LSTM's hidden size. This means that the the embedding layer output size does not have to be equal to hidden_size.
+statics_embedding:
+  # (default 'fc'): Type of the embedding net. Currently, only 'fc' for fully-connected net is supported.
+  type: fc
+  # List of integers that define the number of neurons per layer in the fully connected network. The last number is the number of output neurons. Must have at least length one.
+  hiddens:
+    - 30
+    - 20
+    - 64
+  # (default 'tanh'): activation function of the network. Supported values are: 'tanh', 'sigmoid', 'linear', and 'relu'. The activation function is not applied to the output neurons, which always have a linear activation function. An activation function for the output neurons has to be applied in the main model class.
+  activation: tanh
+  # (default 0.0): Dropout rate applied to the embedding network.
+  dropout: 0.0
+
+# define embedding network for dynamic inputs
+dynamics_embedding:
+  type: fc
+  hiddens:
+    - 30
+    - 20
+    - 64
+  activation: tanh
+  dropout: 0.0
+
+# --- Training configuration -----------------------------------------------------------------------
+
+# Specify which optimizer to use. Currently supported are Adam and AdamW. New optimizers can be added here.
+optimizer: AdamW
+
+# Which loss to use. Currently supported are MSE, NSE, RMSE, GMMLoss, CMALLoss, and UMALLoss. New losses can be added here.
+loss: NSE
+
+# Define a number of training steps for which a loss value of NaN is ignored and no error is raised but instead the training loop proceeds to the next iteration step.
+allow_subsequent_nan_losses: 3
+
+# A list of float values specifying the per-target loss weight, when training on multiple targets at once. Can be combined with any loss. By default, the weight of each target is 1/n with n being the number of target variables. The order of the weights corresponds to the order of the target_variables.
+target_loss_weights:
+
+# add regularization terms.
+# List of strings or 2-tuples with regularization terms and corresponding weights. If no weights are specified, they default to 1. Currently, two reqularizations are supported: (1) tie_frequencies, which couples the predictions of all frequencies via an MSE term, and (2) forecast_overlap, which couples overlapping sequences between hindcast and forecast models. New regularizations can be added here.
+regularization:
+#- tie_frequencies
+#- forecast_overlap
+
+# Learning rate. Can be either a single number (for a constant learning rate) or a dictionary. If it is a dictionary, the keys must be integer that reflect the epochs at which the learning rate is changed to the corresponding value. The key 0 defines the initial learning rate.
+learning_rate:
+  0: 1e-3
+  10: 5e-4
+  20: 1e-4
+
+# Mini-batch size used for training.
+batch_size: 256
+
+# Number of training epochs.
+epochs: 30
+
+# Maximum number of weight updates per training epoch. Leave unspecified to go through all data in every epoch.
+max_updates_per_epoch:
+
+# Defines the time step frequencies to use (daily, hourly, ...). If used, predict_last_n and seq_length must be dicts.
+# Use pandas frequency strings to define frequencies. Note: the strings need to include values, e.g. '1D' instead of 'D'
+# https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html?highlight=frequency#timeseries-offset-aliases
+#use_frequencies:
+#  - 1D
+#  - 1H
+
+# Subset of frequencies from use_frequencies that are "evaluation-only", i.e., the model will get input and produce
+# output in the frequencies listed here, but they will not be considered in the calculation of loss and regularization
+# terms.
+#no_loss_frequencies:
+#- 1H
+
+# Length of the input sequence. If use_frequencies is used, this needs to be a dictionary mapping each frequency to a sequence length, else an int.
+seq_length: 365
+
+# Length of the forecast sequence. This is the number of timesteps in the total seq_length that are part of the forecast rather than the hindcast. Note that this does not add to the total seq_length, and thus, the forecast sequence length must be less than the total sequence length.
+forecast_seq_length:
+
+# An integer number of timesteps where forecast data overlaps with hindcast data. This does not add to the forecast_sequence_length, and must be no larger than the forecast_sequence_length. This is used for ForecastOverlapMSERegularization in the handoff_forecast_model.
+forecast_overlap:
+
+# Defines which time steps are used to calculate the loss, counted backwards. Can't be larger than seq_length. Sequence-to-one would be predict_last_n: 1 and sequence-to-sequence (with e.g. a sequence length of 365) predict_last_n: 365. If use_frequencies is used, this needs to be a dictionary mapping each frequency to a predict_last_n-value, else an int.
+predict_last_n: 1
+
+# Defines the standard deviation of gaussian noise which is added to the labels during training. Set to zero or leave empty to not add noise.
+target_noise_std: 0.005
+
+# If a value, clips norm of gradients to that specific value during training. Leave empty for not clipping.
+clip_gradient_norm: 1
+
+# Number of (parallel) threads used in the data loader.
+num_workers: 8
+
+# Interval, in which the weights of the model are stored to disk. 1 means to store the weights after each epoch, which is the default if not otherwise specified.
+save_weights_every: 1
+
+# --- Logger settings -------------------------------------------------------------------------------
+# Interval at which the training loss is logged, by default 10.
+log_interval: 5
+
+# True/False. If True, writes logging results into TensorBoard file. The default, if not specified, is True.
+log_tensorboard: True
+
+# If a (integer) value greater than 0, saves the predictions as plots of that n specific (random) basins during validations.
+log_n_figures: 2
+
+# --- Data configurations --------------------------------------------------------------------------
+
+# Defines which data set will be used. Currently supported are camels_us (CAMELS (US) data set by Newman et al.), camels_gb (CAMELS-GB by Coxon et al.), camels_cl (CAMELS-CL by Alvarez-Garreton et al.), camels_br (CAMELS-BR by Chagas et al.), camels_aus (CAMELS-AUS by Fowler et al.), lamah_{a,b,c} (LamaH-CE by Klingler et al.), hourly_camels_us (hourly forcing and streamflow data for 516 CAMELS (US) basins, published by Gauch et al.), and generic (can be used with any dataset that is stored in a specific format, see documentation for further informations).
+# [camels_us, camels_gb, camels_cl, camels_br, camels_aus, lamah_{a,b,c}, hourly_camels_us, generic]
+dataset: camels_us
+
+# Full or relative path to the root directory of the data set.
+data_dir: C:\Users\lucas\PycharmProjects\_specialkursus\US_CAMELS\CAMELS_US
+
+#  If not empty, uses the pickled file at this path as the training data. Can be used to not create the same data set multiple times, which saves disk space and time. If empty, creates new data set and optionally stores the data in the run directory (if save_train_data is True).
+train_data_file:
+
+# True/False. If True, caches validation data in memory for the time of training, which does speed up the overall training time. By default True, since even larger datasets are usually just a few GB in memory, which most modern machines can handle.
+cache_validation_data: True
+
+# Set to True, if train data file should be save to disk. If empty or False, train data is not saved.
+save_train_data: False
+
+# List of variables to use as time series inputs. Names must match the exact names as defined in the data set. Note: In case of multiple input forcing products, you have to append the forcing product behind each variable. E.g., 'prcp(mm/day)' of the daymet product is 'prcp(mm/day)_daymet'. When training on multiple frequencies (cf. use_frequencies), it is possible to define dynamic inputs for each frequency individually. To do so, dynamic_inputs must be a dict mapping each frequency to a list of variables. E.g., to use precipitation from daymet for daily and from nldas-hourly for hourly predictions:
+#   1D:
+#     - prcp(mm/day)_daymet
+#   1H:
+#     - total_precipitation_nldas_hourly
+
+# Forcing product [daymet, maurer, maurer_extended, nldas, nldas_extended, nldas_hourly]
+# can be either a list of forcings or a single forcing product
+forcings:
+  - maurer
+  - daymet
+  - nldas
+
+dynamic_inputs:
+  - PRCP(mm/day)_nldas
+  # - PRCP(mm/day)_maurer
+  - prcp(mm/day)_daymet
+  - srad(W/m2)_daymet
+  - tmax(C)_daymet
+  - tmin(C)_daymet
+  - vp(Pa)_daymet
+
+# These are dynamic features (exactly like dyncamic_inputs) that are used as inputs to the forecasting portion of a forecast model. This allows different features to be used for the forecast and hindcast portions of a model. If forecast_inputs is present, then all features in this list must also appear in the dynamic_inputs list, which will contain both forecast and hindcast features.
+forecast_inputs:
+
+# These are the same as forecast_inputs except that they are for the hindcast portion of a forecast model. As with forecast_inputs these dynamic inputs must be included in the dynamic_inputs list.
+hindcast_inputs:
+
+# List of the target variable(s). Names must match the exact names as defined in the data set.
+target_variables:
+  - QObs(mm/d)
+
+# Optional list of target variables to clip to zero during the computation of metrics (e.g. useful to compute zero-clipped metric during the validation between training epochs. Will not affect the data that is saved to disk after evaluation. That is, always the raw model outputs are saved in the result files. Therefore, you eventually need to manually clip the targets to zero if you load the model outputs from file and want to reproduce the metric values.
+clip_targets_to_zero:
+  - QObs(mm/d)
+
+# Can be used to duplicate time series features (e.g., for different normalizations). Can be either a str, list or dictionary (mapping from strings to ints). If string, duplicates the corresponding feature once. If list, duplicates all features in that list once. Use a dictionary to specify the exact number of duplicates you like. To each duplicated feature, we append _copyN, where N is counter starting at 1.
+duplicate_features:
+
+# Can be used to add a lagged copy of another feature to the list of available input/output features. Has to be a dictionary mapping from strings to int or a list of ints, where the string specifies the feature name and the int(s) the number of lagged time steps. Those values can be positive or negative (see pandas shift for details). If a list of integers is provided, only unique values are considered. We append _shiftN to each lagged feature, where N is the shift count.
+lagged_features:
+
+# Currently, only one autoregressive input is allowed, and only one output feature is allowed in an autoregressive model. This is a list of target feature(s) to be used as model inputs. These will be lagged by some number of timesteps > 0, and therefore must appear in the list of lagged_features. Autoregressive inputs are appended to the end of the dynamic features list when building the dataset(s). Missing data is supported in autoregressive inputs. During runtime, autoregressive models append binary flags as inputs to indicate missing data. Autoregressive inputs only work with models that support autoregression and will throw an error if they are included in a config file for a model that does not support autoregression. Leave empty if none should be used.
+#autoregressive_inputs:
+
+# Dictionary to define timeseries features to remove random sections of data from. This allows for conducting certain types of missing data analyses. Keys of this dictionary must match exact names of dynamic inputs as defined in the data set. Values are a dict with keys 'missing_fraction' and 'mean_missing_length', and values that are float and float, respectively, representing ('missing_fraction') the long-term fraction of data to be randomly removed from a given feature, and (2) the expected value of the length of continuous subsequences removed from the timeseries. These two distribution parameters do not consider whether there are any NaN's in the original timeseries. Only works for timeseries features (inputs and targets). Leave empty if none should be used.
+random_holdout_from_dynamic_features:
+
+# Has to be a dictionary, mapping from time series feature names to centering and/or scaling. Using this argument allows to overwrite the default zero mean, unit variance normalization per feature. Supported options for centering are 'None' or 'none', 'mean', 'median' and min. None/none sets the centering parameter to 0.0, mean to the feature mean, median to the feature median, and min to the feature minimum, respectively. Supported options for scaling are 'None' or 'none', 'std', 'minmax'. None/none sets the scaling parameter to 1.0, std to the feature standard deviation and minmax to the feature max minus the feature min. The combination of centering: min and scaling: minmax results in min/max feature scaling to the range [0,1].
+custom_normalization:
+
+# Path to a pickle file (or list of paths for multiple files), containing a dictionary with each key corresponding to one basin id and the value is a date-time indexed pandas DataFrame. Allows the option to add any arbitrary data that is not included in the standard data sets. Convention: If a column is used as static input, the value to use for specific sample should be in same row (datetime) as the target discharge value.
+additional_feature_files:
+
+# Columns of the DataFrame loaded with the additional_feature_files that should be used as 'static' features. These values will be used as static inputs, but they can evolve over time. Convention: The value to use for a specific input sequence should be in the same row (datetime) as the last time step of that sequence. Names must match the column names in the DataFrame. Leave empty to not use any additional static feature.
+#evolving_attributes:
+
+# True/False. If True, creates a basin-one-hot encoding as a(n) (additional) static feature vector for each sample.
+use_basin_id_encoding: False
+
+# True/False. If True, creates a sequence of counting integers over the forecast sequence length as a dynamic input. This input is used to signal forecast lead time for an unrolling forecast. A similar dynamic input of constant zeros is added to the hindcast inputs. If a forecast model is not used then setting timestep_counter to True will return an error.
+timestep_counter:
+
+# Which static attributes to use (e.g., from the static camels attributes for the CAMELS dataset). Leave empty if none should be used. For hydroatlas attributes, use hydroatlas_attributes instead. Names must match the exact names as defined in the data set.
+static_attributes:
+- elev_mean
+- slope_mean
+- area_gages2
+- frac_forest
+- lai_max
+- lai_diff
+- gvf_max
+- gvf_diff
+- soil_depth_pelletier
+- soil_depth_statsgo
+- soil_porosity
+- soil_conductivity
+- max_water_content
+- sand_frac
+- silt_frac
+- clay_frac
+- carbonate_rocks_frac
+- geol_permeability
+- p_mean
+- pet_mean
+- aridity
+- frac_snow
+- high_prec_freq
+- high_prec_dur
+- low_prec_freq
+- low_prec_dur
+
+# Which HydroATLAS attributes to use. Leave empty if none should be used. Names must match the exact names as defined in the data set.
+#hydroatlas_attributes:

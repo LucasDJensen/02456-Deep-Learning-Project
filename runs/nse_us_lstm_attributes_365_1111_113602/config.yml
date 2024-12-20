@@ -1,0 +1,141 @@
+additional_feature_files: None
+allow_subsequent_nan_losses: 3
+batch_size: 256
+cache_validation_data: true
+checkpoint_path: None
+clip_gradient_norm: 1
+clip_targets_to_zero:
+- QObs(mm/d)
+commit_hash: 40d70d7
+custom_normalization:
+data_dir: C:\Users\lucas\PycharmProjects\_specialkursus\US_CAMELS\CAMELS_US
+dataset: camels_us
+device: cuda:0
+duplicate_features:
+dynamic_inputs:
+- PRCP(mm/day)_nldas
+- prcp(mm/day)_daymet
+- srad(W/m2)_daymet
+- tmax(C)_daymet
+- tmin(C)_daymet
+- vp(Pa)_daymet
+dynamics_embedding:
+  type: fc
+  hiddens:
+  - 30
+  - 20
+  - 64
+  activation: tanh
+  dropout: 0.0
+epochs: 30
+experiment_name: nse_us_lstm_attributes_365
+forcings:
+- maurer
+- daymet
+- nldas
+forecast_inputs:
+forecast_overlap:
+forecast_seq_length:
+head: regression
+hidden_size: 64
+hindcast_inputs:
+img_log_dir: 
+  C:\Users\lucas\PycharmProjects\_specialkursus\runs\nse_us_lstm_attributes_365_1111_113602\img_log
+initial_forget_bias: 3
+lagged_features:
+learning_rate:
+  0: 0.001
+  10: 0.0005
+  20: 0.0001
+log_interval: 5
+log_n_figures: 2
+log_tensorboard: true
+loss: NSE
+max_updates_per_epoch:
+mc_dropout:
+metrics:
+- KGE
+- Beta-KGE
+- NSE
+- Alpha-NSE
+- Beta-NSE
+- RMSE
+- MSE
+model: cudalstm
+num_workers: 8
+number_of_basins: 531
+optimizer: AdamW
+output_activation: linear
+output_dropout: 0.4
+package_version: 1.11.0
+per_basin_test_periods_file: None
+per_basin_train_periods_file: None
+per_basin_validation_periods_file: None
+predict_last_n: 1
+random_holdout_from_dynamic_features:
+regularization:
+run_dir: 
+  C:\Users\lucas\PycharmProjects\_specialkursus\runs\nse_us_lstm_attributes_365_1111_113602
+save_train_data: false
+save_validation_results: false
+save_weights_every: 1
+seed: 995238
+seq_length: 365
+static_attributes:
+- elev_mean
+- slope_mean
+- area_gages2
+- frac_forest
+- lai_max
+- lai_diff
+- gvf_max
+- gvf_diff
+- soil_depth_pelletier
+- soil_depth_statsgo
+- soil_porosity
+- soil_conductivity
+- max_water_content
+- sand_frac
+- silt_frac
+- clay_frac
+- carbonate_rocks_frac
+- geol_permeability
+- p_mean
+- pet_mean
+- aridity
+- frac_snow
+- high_prec_freq
+- high_prec_dur
+- low_prec_freq
+- low_prec_dur
+statics_embedding:
+  type: fc
+  hiddens:
+  - 30
+  - 20
+  - 64
+  activation: tanh
+  dropout: 0.0
+target_loss_weights:
+target_noise_std: 0.005
+target_variables:
+- QObs(mm/d)
+test_basin_file: 
+  C:\Users\lucas\PycharmProjects\_specialkursus\data_config\us_camels\531_basin_list.txt
+test_end_date: 30/09/1999
+test_start_date: 01/10/1989
+timestep_counter:
+train_basin_file: 
+  C:\Users\lucas\PycharmProjects\_specialkursus\data_config\us_camels\531_basin_list.txt
+train_data_file: None
+train_dir: 
+  C:\Users\lucas\PycharmProjects\_specialkursus\runs\nse_us_lstm_attributes_365_1111_113602\train_data
+train_end_date: 30/09/2008
+train_start_date: 01/10/1999
+use_basin_id_encoding: false
+validate_every: 3
+validate_n_random_basins: 1
+validation_basin_file: 
+  C:\Users\lucas\PycharmProjects\_specialkursus\data_config\us_camels\531_basin_list.txt
+validation_end_date: 30/09/1989
+validation_start_date: 01/10/1980

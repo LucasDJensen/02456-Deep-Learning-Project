@@ -1,0 +1,133 @@
+additional_feature_files: None
+allow_subsequent_nan_losses: 3
+batch_size: 256
+cache_validation_data: true
+checkpoint_path: None
+clip_gradient_norm: 1
+clip_targets_to_zero:
+- Q[mmday]
+commit_hash: 4fd8a70
+custom_normalization:
+data_dir: C:\Users\lucas\PycharmProjects\_specialkursus\DK_SUBSET_CAMELS
+dataset: generic
+device: cuda:0
+duplicate_features:
+dynamic_inputs:
+- T[degC]
+- P[mmday]
+- PET[mmday]
+dynamics_embedding:
+  type: fc
+  hiddens:
+  - 30
+  - 20
+  - 64
+  activation: tanh
+  dropout: 0.0
+epochs: 30
+experiment_name: nse_dk_lstm_attributes_per_basin_365
+forecast_inputs:
+forecast_overlap:
+forecast_seq_length:
+head: regression
+hidden_size: 64
+hindcast_inputs:
+img_log_dir: 
+  C:\Users\lucas\PycharmProjects\_specialkursus\runs\nse_dk_lstm_attributes_per_basin_365_1810_112154\img_log
+initial_forget_bias: 3
+lagged_features:
+learning_rate:
+  0: 0.001
+  10: 0.0005
+  20: 0.0001
+log_interval: 5
+log_n_figures: 2
+log_tensorboard: true
+loss: NSE
+max_updates_per_epoch:
+mc_dropout:
+metrics:
+- KGE
+- Beta-KGE
+- NSE
+- Alpha-NSE
+- Beta-NSE
+- RMSE
+- MSE
+model: cudalstm
+num_workers: 2
+number_of_basins: 570
+optimizer: AdamW
+output_activation: linear
+output_dropout: 0.4
+package_version: 1.11.0
+per_basin_test_periods_file: 
+  C:\Users\lucas\PycharmProjects\_specialkursus\data_config\per_basin\per_basin_test_periods_file.pkl
+per_basin_train_periods_file: 
+  C:\Users\lucas\PycharmProjects\_specialkursus\data_config\per_basin\per_basin_train_periods_file.pkl
+per_basin_validation_periods_file: 
+  C:\Users\lucas\PycharmProjects\_specialkursus\data_config\per_basin\per_basin_val_periods_file.pkl
+predict_last_n: 1
+random_holdout_from_dynamic_features:
+regularization:
+run_dir: 
+  C:\Users\lucas\PycharmProjects\_specialkursus\runs\nse_dk_lstm_attributes_per_basin_365_1810_112154
+save_train_data: false
+save_validation_results: false
+save_weights_every: 5
+seed: 768550
+seq_length: 365
+static_attributes:
+- area
+- elevation_min
+- elevation_max
+- elevation_mean
+- elevation_median
+- slope_min
+- slope_max
+- slope_mean
+- slope_median
+- frac_flat_area
+- mean_temp
+- mean_precip
+- mean_pet
+- share_urban
+- share_agri
+- share_forest
+- nature_dry
+- nature_wet
+- share_lake_stream
+- share_clay_a
+- share_fsand_a
+- share_gsand_a
+- share_clay_b
+- share_fsand_b
+- share_gsand_b
+- share_fsand_c
+- share_gsand_c
+- share_clay_d
+- share_fsand_d
+- share_gsand_d
+statics_embedding:
+  type: fc
+  hiddens:
+  - 30
+  - 20
+  - 64
+  activation: tanh
+  dropout: 0.0
+target_loss_weights:
+target_noise_std: 0.005
+target_variables:
+- Q[mmday]
+test_basin_file: C:\Users\lucas\PycharmProjects\_specialkursus\data_config\per_basin\test_basin_file.txt
+timestep_counter:
+train_basin_file: C:\Users\lucas\PycharmProjects\_specialkursus\data_config\per_basin\train_basin_file.txt
+train_data_file: None
+train_dir: 
+  C:\Users\lucas\PycharmProjects\_specialkursus\runs\nse_dk_lstm_attributes_per_basin_365_1810_112154\train_data
+use_basin_id_encoding: false
+validate_every: 1
+validate_n_random_basins: 10
+validation_basin_file: 
+  C:\Users\lucas\PycharmProjects\_specialkursus\data_config\per_basin\validation_basin_file.txt

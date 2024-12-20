@@ -1,0 +1,104 @@
+attribute_means:
+  area: 100633897.36426897
+  elevation_max: 88.26770689278318
+  elevation_mean: 44.6161300676184
+  elevation_median: 44.5761025157414
+  elevation_min: 14.00866973206989
+  frac_flat_area: 0.15833101739177058
+  mean_pet: 1.6924559275438595
+  mean_precip: 2.1385753745614036
+  mean_temp: 8.966987853157894
+  nature_dry: 0.025381270083550588
+  nature_wet: 0.04555874126974163
+  share_agri: 0.5819568372480776
+  share_clay_a: 0.08423969630716953
+  share_clay_b: 0.10492343044547228
+  share_clay_d: 0.11293522855549373
+  share_forest: 0.16923453446554296
+  share_fsand_a: 0.4161715376343513
+  share_fsand_b: 0.39128091247848157
+  share_fsand_c: 0.3935277112558356
+  share_fsand_d: 0.37830830740746485
+  share_gsand_a: 0.3964514219368779
+  share_gsand_b: 0.4071989362323925
+  share_gsand_c: 0.4039248161003895
+  share_gsand_d: 0.40364010959673374
+  share_lake_stream: 0.030085641588455215
+  share_urban: 0.1306943535626725
+  slope_max: 32.42189587375574
+  slope_mean: 2.643542083579588
+  slope_median: 1.9129600060874956
+  slope_min: 0.0014364458910565373
+attribute_stds:
+  area: 211070984.9495041
+  elevation_max: 33.262965984775164
+  elevation_mean: 22.085527794946962
+  elevation_median: 23.163766152278924
+  elevation_min: 16.750891219113576
+  frac_flat_area: 0.15296311408644314
+  mean_pet: 0.0765953130420394
+  mean_precip: 0.3152705688741071
+  mean_temp: 0.4079243150962688
+  nature_dry: 0.04993060209738828
+  nature_wet: 0.03239626988382329
+  share_agri: 0.19592389445338498
+  share_clay_a: 0.03414741816128376
+  share_clay_b: 0.04621097689905192
+  share_clay_d: 0.04581921525069493
+  share_forest: 0.14844435777572956
+  share_fsand_a: 0.08552461603353818
+  share_fsand_b: 0.09105986396196132
+  share_fsand_c: 0.0952045846603421
+  share_fsand_d: 0.09871698301592033
+  share_gsand_a: 0.12419372433394106
+  share_gsand_b: 0.13499220262890257
+  share_gsand_c: 0.15190806503807333
+  share_gsand_d: 0.15321870836161144
+  share_lake_stream: 0.037225681841786366
+  share_urban: 0.08907395856079851
+  slope_max: 8.134144735174932
+  slope_mean: 1.194679869322681
+  slope_median: 0.9535453187083451
+  slope_min: 0.01624633662855085
+xarray_feature_scale:
+  coords: {}
+  attrs: {}
+  dims: {}
+  data_vars:
+    PET[mmday]:
+      dims: []
+      attrs: {}
+      data: 1.5059608221054077
+    P[mmday]:
+      dims: []
+      attrs: {}
+      data: 4.153501033782959
+    Q[mmday]:
+      dims: []
+      attrs: {}
+      data: 10.103645324707031
+    T[degC]:
+      dims: []
+      attrs: {}
+      data: 6.462071418762207
+xarray_feature_center:
+  coords: {}
+  attrs: {}
+  dims: {}
+  data_vars:
+    PET[mmday]:
+      dims: []
+      attrs: {}
+      data: 1.6803065538406372
+    P[mmday]:
+      dims: []
+      attrs: {}
+      data: 2.124943256378174
+    Q[mmday]:
+      dims: []
+      attrs: {}
+      data: 1.4170931577682495
+    T[degC]:
+      dims: []
+      attrs: {}
+      data: 8.686396598815918
